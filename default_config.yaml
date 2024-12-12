@@ -1,0 +1,8 @@
+targets:
+  - local_path: northd/ovn-northd
+    remote_path: bin/ovn-northd
+    service: microovn.ovn-northd
+
+  - local_path: controller/ovn-controller
+    remote_path: bin/ovn-controller
+    service: microovn.chassis

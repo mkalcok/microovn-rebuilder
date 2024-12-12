@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "microovn-rebuilder"
+version = "0.1.0"
+description = ""
+authors = ["Martin Kalcok <martin.kalcok@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyyaml = "^6.0.2"
+
+[tool.poetry.scripts]
+microovn-rebuilder = "microovn_rebuilder.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[tool.black]
+line-length = 89
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
