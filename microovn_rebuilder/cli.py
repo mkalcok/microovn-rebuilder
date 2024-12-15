@@ -1,12 +1,11 @@
+import argparse
 import os
 import sys
-from typing import Dict
-import argparse
-from typing import Set
+from typing import Dict, Set
 
-from microovn_rebuilder.remote import create_connector, ConnectorException, BaseConnector
-from microovn_rebuilder.target import Target, parse_config, ConfigException
 from microovn_rebuilder.ovn import rebuild
+from microovn_rebuilder.remote import BaseConnector, ConnectorException, create_connector
+from microovn_rebuilder.target import ConfigException, Target, parse_config
 
 NOT_FOUND_TS = float(-1)
 

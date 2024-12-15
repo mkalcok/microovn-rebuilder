@@ -1,6 +1,6 @@
 import dataclasses
 from pathlib import Path
-from typing import Optional, List, Set
+from typing import List, Optional, Set
 
 import yaml
 
