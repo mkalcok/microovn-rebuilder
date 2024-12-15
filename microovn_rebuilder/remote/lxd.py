@@ -1,6 +1,8 @@
 import os
 import subprocess
+from pathlib import Path
 from subprocess import CompletedProcess
+from typing import Union
 
 from microovn_rebuilder.remote.base import BaseConnector, ConnectorException
 from microovn_rebuilder.target import Target
@@ -24,11 +26,12 @@ class LXDConnector(BaseConnector):
             )
             self._check_cmd_result(result, f"[{remote}] Failed to upload file")
 
-            print(f"[{remote}] Restarting {target.service}")
-            result = self._run_command(
-                "lxc", "exec", remote, "snap", "restart", target.service
-            )
-            self._check_cmd_result(result, f"[{remote}] Failed to restart service")
+            if target.service:
+                print(f"[{remote}] Restarting {target.service}")
+                result = self._run_command(
+                    "lxc", "exec", remote, "snap", "restart", target.service
+                )
+                self._check_cmd_result(result, f"[{remote}] Failed to restart service")
 
     def check_remote(self, remote_dst: str) -> None:
         for remote in self.remotes:
@@ -41,7 +44,7 @@ class LXDConnector(BaseConnector):
             )
 
     @staticmethod
-    def _run_command(*args) -> CompletedProcess:
+    def _run_command(*args: Union[str, Path]) -> CompletedProcess:
         return subprocess.run(args, capture_output=True)
 
     @staticmethod

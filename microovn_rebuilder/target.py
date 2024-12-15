@@ -11,7 +11,7 @@ class Target:
     remote_rel_path: str
 
     local_base_path: str
-    remote_base_path: Optional[str] = "/root/squashfs-root/"
+    remote_base_path: str = "/root/squashfs-root/"
 
     service: Optional[str] = None
     pre_exec: Optional[str] = None
@@ -21,7 +21,7 @@ class Target:
         return Path(self.local_base_path, self.local_rel_path)
 
     @property
-    def remote_path(self):
+    def remote_path(self) -> Path:
         return Path(self.remote_base_path, self.remote_rel_path)
 
 

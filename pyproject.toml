@@ -16,6 +16,7 @@ microovn-rebuilder = "microovn_rebuilder.cli:main"
 black = "^24.10.0"
 tox = "^4.23.2"
 isort = "^5.13.2"
+mypy = "^1.13.0"
 
 [tool.black]
 line-length = 89
@@ -24,6 +25,14 @@ line-length = 89
 profile = "black"
 skip_gitignore = true
 line_length = 89
+
+[tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+disallow_untyped_defs = true
+disallow_untyped_calls = true
 
 [tool.tox.env_run_base]
 skip_install = true
@@ -35,6 +44,8 @@ description = "Run static code check and lints on the code"
 commands = [
     ["poetry", "run", "black", "--check", "microovn_rebuilder"],
     ["poetry", "run", "isort", "--check", "microovn_rebuilder"],
+    ["poetry", "run", "mypy", "--install-types", "--non-interactive"],
+    ["poetry", "run", "mypy", "microovn_rebuilder"],
 ]
 
 [tool.tox.env.format]
