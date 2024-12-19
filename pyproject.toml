@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Script for leveraging MicroOVN in OVN development process"
 authors = ["Martin Kalcok <martin.kalcok@gmail.com>"]
 readme = "README.md"
+include = ["default_config.yaml"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -12,11 +13,14 @@ pyyaml = "^6.0.2"
 [tool.poetry.scripts]
 microovn-rebuilder = "microovn_rebuilder.cli:main"
 
+
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 tox = "^4.23.2"
 isort = "^5.13.2"
 mypy = "^1.13.0"
+pytest = "^8.3.4"
+pytest-mock = "^3.14.0"
 
 [tool.black]
 line-length = 89

@@ -48,7 +48,8 @@ def watch(
         try:
             initial_timestamps = get_file_timestamps(targets)
             input("Press 'Enter' to rebuild and deploy OVN. (Ctrl-C for exit)")
-            rebuild(ovn_dir, jobs)
+            if not rebuild(ovn_dir, jobs):
+                continue
             current_timestamps = get_file_timestamps(targets)
 
             need_restart = get_changed_targets(initial_timestamps, current_timestamps)
