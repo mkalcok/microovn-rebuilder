@@ -205,6 +205,47 @@ cluster. Following connectors are currently supported:
   * Version of OVN installed on the cluster, by the MicroOVN, must roughly match the
     version of the source file you are editing.
 
+## Contributing
+
+While this is admittedly very small and niche project, any contributions are welcome. Be
+it in a form of Github issues or Pull Requests. For pul requests to be merged, they need
+to pass CI pipeline (tests/linters). You can get ahead of the game by running them
+locally before pushing.
+
+## Running tests locally
+
+All tests related to the python code are defined as "tox environments" and can be
+executed using `poetry`, provided that dependencies from `dev` group are installed (
+it should be taken care of by simply running `poetry install`.
+
+### Formatting code
+
+This project uses set of opinionated code formatters to keep the code style consistent,
+you can run them with:
+
+```bash
+poetry run tox -e format
+```
+
+### Linting code
+
+To see if any of the linters have objections to the code, run:
+
+```bash
+poetry run tox -e lint
+```
+
+### Unit tests
+
+This project aims to keep 100% code coverage (with few explicit exemptions). To execute
+all unit tests, along with the coverage report, run:
+
+```bash
+poetry run tox -e unit
+```
+
+Note that this command may "fail" if the coverage is not sufficient.
+
 ## Todo
 * Support execution of arbitrary scripts aside from just restarting services on file
   updates. This will enable syncing things like OVSDB schemas as they require migration
