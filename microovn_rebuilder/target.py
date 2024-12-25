@@ -62,7 +62,7 @@ def parse_config(
             )
     except KeyError as exc:
         raise ConfigException(
-            f"One of the 'targets' in config file '{cfg_path}' is missing key: {exc.args[1]}"
+            f"One of the 'targets' in config file '{cfg_path}' is missing key: {exc.args[0]}"
         ) from exc
 
     if not targets:

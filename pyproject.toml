@@ -21,6 +21,8 @@ isort = "^5.13.2"
 mypy = "^1.13.0"
 pytest = "^8.3.4"
 pytest-mock = "^3.14.0"
+pytest-cov = "^6.0.0"
+coverage = "^7.6.9"
 
 [tool.black]
 line-length = 89
@@ -46,17 +48,23 @@ commands_pre = [["poetry", "install"]]
 [tool.tox.env.lint]
 description = "Run static code check and lints on the code"
 commands = [
-    ["poetry", "run", "black", "--check", "microovn_rebuilder"],
-    ["poetry", "run", "isort", "--check", "microovn_rebuilder"],
-    ["poetry", "run", "mypy", "--install-types", "--non-interactive"],
-    ["poetry", "run", "mypy", "microovn_rebuilder"],
+    ["poetry", "run", "black", "--check", "microovn_rebuilder/", "tests/unit/"],
+    ["poetry", "run", "isort", "--check", "microovn_rebuilder/", "tests/unit/"],
+    ["poetry", "run", "mypy", "--install-types", "--non-interactive", "microovn_rebuilder/"],
 ]
 
 [tool.tox.env.format]
 description = "Run code formatters"
 commands = [
-    ["poetry", "run", "black", "microovn_rebuilder"],
-    ["poetry", "run", "isort", "microovn_rebuilder"],
+    ["poetry", "run", "black", "microovn_rebuilder/", "tests/unit/"],
+    ["poetry", "run", "isort", "microovn_rebuilder/", "tests/unit/"],
+]
+
+[tool.tox.env.unit]
+description = "Run unit tests (including required coverage)"
+commands = [
+    ["poetry", "run", "pytest", "--cov=microovn_rebuilder/", "--cov-report=json", "tests/unit/"],
+    ["poetry", "run", "coverage", "report", "--fail-under=100"],
 ]
 
 [build-system]

@@ -15,8 +15,8 @@ class BaseConnector(ABC):
 
     @abstractmethod
     def check_remote(self, remote_dst: str) -> None:
-        pass
+        pass  # pragma: no cover
 
     @abstractmethod
     def update(self, target: Target) -> None:
-        pass
+        pass  # pragma: no cover

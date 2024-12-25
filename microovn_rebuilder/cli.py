@@ -62,7 +62,7 @@ def watch(
             break
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args() -> argparse.Namespace:  # pragma: no cover
     parser = argparse.ArgumentParser(description="Monitor file changes.")
     parser.add_argument("-c", "--config", required=True, help="Path to config file")
     parser.add_argument(
@@ -115,5 +115,5 @@ def main() -> None:
     watch(targets, connector, args.ovn_src, args.jobs)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
