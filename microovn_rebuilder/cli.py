@@ -81,10 +81,13 @@ def parse_args() -> argparse.Namespace:  # pragma: no cover
     )
     parser.add_argument(
         "-H",
-        "--host",
+        "--hosts",
         type=str,
         required=True,
-        help="Remote host specification. Expected format: '<connection_type>:<remote_host>'",
+        help="Comma-separated list of remote host to which changes will be synced. For "
+        "details on supported connectors and their syntax, please see "
+        "documentation. Generally, the format is:"
+        "'<connection_type>:<remote_host>'",
     )
     parser.add_argument(
         "-j",
@@ -106,7 +109,7 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        connector = create_connector(args.host)
+        connector = create_connector(args.hosts)
         connector.check_remote(args.remote_path)
     except ConnectorException as exc:
         print(f"Failed to create connection to remote host: {exc}")
