@@ -109,6 +109,8 @@ def test_watch(mocker, default_targets, local_ovn_path, targets_changed):
         print_calls.append(call())
         mock_print.assert_has_calls([call()])
 
+    connector.teardown.assert_called_once()
+
 
 def test_watch_rebuild_failed(mocker, default_targets, local_ovn_path):
     mock_get_file_timestamps = mocker.patch.object(cli, "get_file_timestamps")
@@ -131,6 +133,7 @@ def test_watch_rebuild_failed(mocker, default_targets, local_ovn_path):
     # After rebuild returns False, no updates should occur.
     mock_get_changed_targets.assert_not_called()
     mock_update_targets.assert_not_called()
+    connector.teardown.assert_called_once()
 
 
 def test_main_parse_config_fail(mocker):
@@ -166,7 +169,7 @@ def test_main_connector_fail(mocker, default_targets):
     mock_args.config = MagicMock()
     mock_args.ovn_src = MagicMock()
     mock_args.remote_path = MagicMock()
-    mock_args.host = MagicMock()
+    mock_args.hosts = MagicMock()
     mock_arg_parse = mocker.patch.object(cli, "parse_args", return_value=mock_args)
 
     mock_parse_config = mocker.patch.object(
@@ -190,7 +193,7 @@ def test_main_connector_fail(mocker, default_targets):
     mock_parse_config.assert_called_with(
         mock_args.config, mock_args.ovn_src, mock_args.remote_path
     )
-    mock_create_connector.assert_called_once_with(mock_args.host)
+    mock_create_connector.assert_called_once_with(mock_args.hosts)
     mock_connector.check_remote.assert_called_once_with(mock_args.remote_path)
 
     mock_print.assert_called_with(
@@ -205,7 +208,7 @@ def test_main_ok(mocker, default_targets):
     mock_args.config = MagicMock()
     mock_args.ovn_src = MagicMock()
     mock_args.remote_path = MagicMock()
-    mock_args.host = MagicMock()
+    mock_args.hosts = MagicMock()
     mock_args.jobs = MagicMock()
     mock_arg_parse = mocker.patch.object(cli, "parse_args", return_value=mock_args)
 
@@ -227,7 +230,7 @@ def test_main_ok(mocker, default_targets):
     mock_parse_config.assert_called_with(
         mock_args.config, mock_args.ovn_src, mock_args.remote_path
     )
-    mock_create_connector.assert_called_once_with(mock_args.host)
+    mock_create_connector.assert_called_once_with(mock_args.hosts)
     mock_connector.check_remote.assert_called_once_with(mock_args.remote_path)
 
     mock_watch.assert_called_with(

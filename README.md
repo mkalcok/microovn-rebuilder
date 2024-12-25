@@ -195,8 +195,12 @@ Press 'Enter' to rebuild and deploy OVN. (Ctrl-C for exit)
 ## Supported remote connectors
 
 This tool is primarily meant to sync OVN binaries to the remote hosts running the
-cluster. Following connectors are currently supported:
-  * LXD
+cluster. It supports multiple types of connection types called "Connectors". Each
+connector has specific syntax for defining remote targets expected in  the `-H/--host`
+argument. Following connectors are currently supported:
+
+  * LXD - `lxd:<container_name>`
+  * SSH - `ssh:[<username>@]<hostname_or_ip>`
 
 ## Caveats
 
@@ -250,7 +254,6 @@ Note that this command may "fail" if the coverage is not sufficient.
 * Support execution of arbitrary scripts aside from just restarting services on file
   updates. This will enable syncing things like OVSDB schemas as they require migration
   execution of a migration script instead of just a service restart.
-* Add SSH connector
 * Add automation for bootstrapping local OVN source repository
 * Add automation for bootstrap remote cluster
 * Add command that lists supported remote connectors

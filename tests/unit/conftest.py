@@ -4,7 +4,7 @@ from typing import Set
 import pytest
 
 import microovn_rebuilder
-from microovn_rebuilder.remote import lxd
+from microovn_rebuilder.remote import lxd, ssh
 from microovn_rebuilder.target import Target, parse_config
 
 
@@ -33,3 +33,11 @@ def default_targets(
 @pytest.fixture(scope="session")
 def lxd_connector() -> lxd.LXDConnector:
     return lxd.LXDConnector(["vm1", "vm2"])
+
+
+@pytest.fixture(scope="function")
+def ssh_connector(mocker) -> ssh.SSHConnector:
+    mocker.patch("microovn_rebuilder.remote.ssh.SSHClient", side_effect=mocker.MagicMock)
+    connector = ssh.SSHConnector(["root@vm1", "vm2"])
+    connector.initialize()
+    return connector

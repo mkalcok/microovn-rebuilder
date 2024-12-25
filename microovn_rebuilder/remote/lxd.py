@@ -10,6 +10,14 @@ from microovn_rebuilder.target import Target
 
 class LXDConnector(BaseConnector):
 
+    def initialize(self) -> None:
+        # LXDConnector does not require any special initialization
+        pass  # pragma: no cover
+
+    def teardown(self) -> None:
+        # LXDConnector does not require any special teardown
+        pass  # pragma: no cover
+
     def update(self, target: Target) -> None:
         for remote in self.remotes:
             print(f"{os.linesep}[{remote}] Removing remote file {target.remote_path}")
