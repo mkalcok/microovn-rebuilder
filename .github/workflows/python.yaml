@@ -1,0 +1,46 @@
+name: Python tests
+
+on:
+  pull_request:
+  push:
+      branches: [main]
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install poetry
+        run: pipx install poetry==1.8
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Run linters
+        run: poetry run tox -e lint
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install poetry
+        run: pipx install poetry==1.8
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: poetry
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Run linters
+        run: poetry run tox -e unit
