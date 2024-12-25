@@ -14,6 +14,14 @@ class BaseConnector(ABC):
         self.remotes = remotes
 
     @abstractmethod
+    def initialize(self) -> None:
+        pass  # pragma: no cover
+
+    @abstractmethod
+    def teardown(self) -> None:
+        pass  # pragma: no cover
+
+    @abstractmethod
     def check_remote(self, remote_dst: str) -> None:
         pass  # pragma: no cover
 

@@ -109,6 +109,8 @@ def test_watch(mocker, default_targets, local_ovn_path, targets_changed):
         print_calls.append(call())
         mock_print.assert_has_calls([call()])
 
+    connector.teardown.assert_called_once()
+
 
 def test_watch_rebuild_failed(mocker, default_targets, local_ovn_path):
     mock_get_file_timestamps = mocker.patch.object(cli, "get_file_timestamps")
@@ -131,6 +133,7 @@ def test_watch_rebuild_failed(mocker, default_targets, local_ovn_path):
     # After rebuild returns False, no updates should occur.
     mock_get_changed_targets.assert_not_called()
     mock_update_targets.assert_not_called()
+    connector.teardown.assert_called_once()
 
 
 def test_main_parse_config_fail(mocker):

@@ -1,7 +1,11 @@
 from .base import BaseConnector, ConnectorException
 from .lxd import LXDConnector
+from .ssh import SSHConnector
 
-_CONNECTORS = {"lxd": LXDConnector}
+_CONNECTORS = {
+    "lxd": LXDConnector,
+    "ssh": SSHConnector,
+}
 
 
 def create_connector(remote_spec: str) -> BaseConnector:
@@ -23,10 +27,13 @@ def create_connector(remote_spec: str) -> BaseConnector:
         )
 
     connector_type = types.pop()
-    connector = _CONNECTORS.get(connector_type)
-    if connector is None:
+    connector_class = _CONNECTORS.get(connector_type)
+    if connector_class is None:
         raise ConnectorException(
             f"{connector_type} is not a valid connector type. Available types: {", ".join(_CONNECTORS.keys())}"
         )
 
-    return connector(remotes)
+    connector = connector_class(remotes)
+    connector.initialize()
+
+    return connector

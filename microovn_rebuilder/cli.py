@@ -59,6 +59,7 @@ def watch(
                 print("[local] No changes in watched files")
         except KeyboardInterrupt:
             print()
+            connector.teardown()
             break
 
 

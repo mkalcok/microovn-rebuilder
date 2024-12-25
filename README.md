@@ -200,6 +200,7 @@ connector has specific syntax for defining remote targets expected in  the `-H/-
 argument. Following connectors are currently supported:
 
   * LXD - `lxd:<container_name>`
+  * SSH - `ssh:[<username>@]<hostname_or_ip>`
 
 ## Caveats
 

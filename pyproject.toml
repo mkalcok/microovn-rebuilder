@@ -9,6 +9,7 @@ include = ["default_config.yaml"]
 [tool.poetry.dependencies]
 python = "^3.12"
 pyyaml = "^6.0.2"
+paramiko = "^3.5.0"
 
 [tool.poetry.scripts]
 microovn-rebuilder = "microovn_rebuilder.cli:main"
