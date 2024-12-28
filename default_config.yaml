@@ -1,8 +1,26 @@
 targets:
+  # OVN northd service
   - local_path: northd/ovn-northd
     remote_path: bin/ovn-northd
     service: microovn.ovn-northd
 
+  # OVN controller service
   - local_path: controller/ovn-controller
     remote_path: bin/ovn-controller
     service: microovn.chassis
+
+  # ovn-nbctl tool
+  - local_path: utilities/ovn-nbctl
+    remote_path: bin/ovn-nbctl
+
+  # ovn-sbctl tool
+  - local_path: utilities/ovn-sbctl
+    remote_path: bin/ovn-sbctl
+
+  # ovn-appctl tool
+  - local_path: utilities/ovn-appctl
+    remote_path: bin/ovn-appctl
+
+  # ovn-trace tool
+  - local_path: utilities/ovn-trace
+    remote_path: bin/ovn-trace

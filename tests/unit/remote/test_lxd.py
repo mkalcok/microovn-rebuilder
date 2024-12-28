@@ -8,43 +8,48 @@ from microovn_rebuilder.remote import ConnectorException, lxd
 
 
 def test_update(mocker, lxd_connector, default_targets):
-    target = list(default_targets)[0]
-    mock_run_result = MagicMock(spec=subprocess.CompletedProcess)
-    mock_run_cmd = mocker.patch.object(
-        lxd_connector, "_run_command", return_value=mock_run_result
-    )
-    mock_check_cmd = mocker.patch.object(lxd_connector, "_check_cmd_result")
-
-    expected_run_calls = []
-    expected_check_calls = []
-    for remote in lxd_connector.remotes:
-        expected_run_calls.append(
-            call("lxc", "file", "delete", f"{remote}{target.remote_path}")
+    for target in default_targets:
+        mock_run_result = MagicMock(spec=subprocess.CompletedProcess)
+        mock_run_cmd = mocker.patch.object(
+            lxd_connector, "_run_command", return_value=mock_run_result
         )
-        expected_check_calls.append(
-            call(mock_run_result, f"[{remote}] Failed to remove remote file")
-        )
+        mock_check_cmd = mocker.patch.object(lxd_connector, "_check_cmd_result")
 
-        expected_run_calls.append(
-            call(
-                "lxc", "file", "push", target.local_path, f"{remote}{target.remote_path}"
+        expected_run_calls = []
+        expected_check_calls = []
+        for remote in lxd_connector.remotes:
+            expected_run_calls.append(
+                call("lxc", "file", "delete", f"{remote}{target.remote_path}")
             )
-        )
-        expected_check_calls.append(
-            call(mock_run_result, f"[{remote}] Failed to upload file")
-        )
+            expected_check_calls.append(
+                call(mock_run_result, f"[{remote}] Failed to remove remote file")
+            )
 
-        expected_run_calls.append(
-            call("lxc", "exec", remote, "snap", "restart", target.service)
-        )
-        expected_check_calls.append(
-            call(mock_run_result, f"[{remote}] Failed to restart service")
-        )
+            expected_run_calls.append(
+                call(
+                    "lxc",
+                    "file",
+                    "push",
+                    target.local_path,
+                    f"{remote}{target.remote_path}",
+                )
+            )
+            expected_check_calls.append(
+                call(mock_run_result, f"[{remote}] Failed to upload file")
+            )
 
-    lxd_connector.update(target)
+            if target.service:
+                expected_run_calls.append(
+                    call("lxc", "exec", remote, "snap", "restart", target.service)
+                )
+                expected_check_calls.append(
+                    call(mock_run_result, f"[{remote}] Failed to restart service")
+                )
 
-    mock_run_cmd.assert_has_calls(expected_run_calls)
-    mock_check_cmd.assert_has_calls(expected_check_calls)
+        lxd_connector.update(target)
+
+        mock_run_cmd.assert_has_calls(expected_run_calls)
+        mock_check_cmd.assert_has_calls(expected_check_calls)
 
 
 def test_check_remote(mocker, lxd_connector, remote_deployment_path):

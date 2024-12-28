@@ -8,6 +8,8 @@ from paramiko.sftp_client import SFTPClient
 from paramiko.ssh_exception import SSHException
 
 from microovn_rebuilder.remote import ConnectorException, SSHConnector
+from microovn_rebuilder.target import Target
+from tests.unit.conftest import default_targets
 
 
 def test_initialize(mocker):
@@ -50,37 +52,39 @@ def test_update_ssh_err(mocker, ssh_connector, default_targets):
 
 
 def test_update(mocker, ssh_connector, default_targets):
-    target = list(default_targets)[0]
+    for target in default_targets:
+        file_stats = MagicMock(autospec=stat_result)
+        mocker.patch("microovn_rebuilder.remote.ssh.os.stat", return_value=file_stats)
 
-    file_stats = MagicMock(autospec=stat_result)
-    mocker.patch("microovn_rebuilder.remote.ssh.os.stat", return_value=file_stats)
+        expected_run_commands = []
+        for remote, client in ssh_connector.connections.items():
+            if target.service:
+                expected_run_commands.append(
+                    call(client, remote, f"snap restart {target.service}")
+                )
+        mock_run_command = mocker.patch.object(ssh_connector, "_run_command")
 
-    expected_run_commands = []
-    for remote, client in ssh_connector.connections.items():
-        expected_run_commands.append(
-            call(client, remote, f"snap restart {target.service}")
-        )
-    mock_run_command = mocker.patch.object(ssh_connector, "_run_command")
+        mock_sftp_ctx = []
+        mock_sftps = []
+        for connection in ssh_connector.connections.values():
+            sftp = MagicMock(autospec=SFTPClient)
+            sftp_ctx = MagicMock(autospec=SFTPClient)
+            sftp_ctx.__enter__ = MagicMock(return_value=sftp)
 
-    mock_sftp_ctx = []
-    mock_sftps = []
-    for connection in ssh_connector.connections.values():
-        sftp = MagicMock(autospec=SFTPClient)
-        sftp_ctx = MagicMock(autospec=SFTPClient)
-        sftp_ctx.__enter__ = MagicMock(return_value=sftp)
+            connection.open_sftp.return_value = sftp_ctx
+            mock_sftp_ctx.append(sftp_ctx)
+            mock_sftps.append(sftp)
 
-        connection.open_sftp.return_value = sftp_ctx
-        mock_sftp_ctx.append(sftp_ctx)
-        mock_sftps.append(sftp)
+        ssh_connector.update(target)
 
-    ssh_connector.update(target)
+        for sftp in mock_sftps:
+            sftp.remove.assert_called_once_with(str(target.remote_path))
+            sftp.put.assert_called_once_with(target.local_path, str(target.remote_path))
+            sftp.chmod.assert_called_once_with(
+                str(target.remote_path), file_stats.st_mode
+            )
 
-    for sftp in mock_sftps:
-        sftp.remove.assert_called_once_with(str(target.remote_path))
-        sftp.put.assert_called_once_with(target.local_path, str(target.remote_path))
-        sftp.chmod.assert_called_once_with(str(target.remote_path), file_stats.st_mode)
-
-    mock_run_command.assert_has_calls(expected_run_commands)
+        mock_run_command.assert_has_calls(expected_run_commands)
 
 
 def test_check_remote(mocker, ssh_connector, remote_deployment_path):
